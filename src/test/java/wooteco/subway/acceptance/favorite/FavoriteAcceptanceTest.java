@@ -68,23 +68,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             stationHanti.getId());
         assertThat(favoriteExistenceResponse.isExistence()).isFalse();
 
-        addFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
+        Long firstFavoriteId = addFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
         favoriteExistenceResponse = existFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
         assertThat(favoriteExistenceResponse.isExistence()).isTrue();
 
-        removeFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
+        removeFavorite(loginToken, firstFavoriteId);
         favoriteExistenceResponse = existFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
         assertThat(favoriteExistenceResponse.isExistence()).isFalse();
 
         //given
-        addFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
-        addFavorite(loginToken, stationKangnam.getId(), stationHanti.getId());
-        addFavorite(loginToken, stationYeoksam.getId(), stationKangnam.getId());
+        Long secondFavoriteId = addFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
+        Long thirdFavoriteId = addFavorite(loginToken, stationKangnam.getId(), stationHanti.getId());
+        Long fourthFavoriteId = addFavorite(loginToken, stationYeoksam.getId(), stationKangnam.getId());
         List<FavoriteResponse> allFavorites = findAllFavorites(loginToken);
 
         assertThat(allFavorites).hasSize(3);
 
-        removeFavorite(loginToken, stationYeoksam.getId(), stationHanti.getId());
+        removeFavorite(loginToken, secondFavoriteId);
         allFavorites = findAllFavorites(loginToken);
         assertThat(allFavorites).hasSize(2);
 
@@ -102,16 +102,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 when().
                 queryParam("sourceId", sourceStationId).
                 queryParam("targetId", targetStationId).
-                get(BASE_PATH + "/existsPath").
+                get(BASE_PATH + "/exist").
                 then().
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract().as(FavoriteExistenceResponse.class);
     }
 
-    private void addFavorite(TokenResponse loginToken, Long sourceStationId, Long targetStationId) {
+    private Long addFavorite(TokenResponse loginToken, Long sourceStationId, Long targetStationId) {
         FavoriteRequest request = new FavoriteRequest(sourceStationId, targetStationId);
-        given().
+        return given().
             accept(MediaType.APPLICATION_JSON_VALUE).
             contentType(MediaType.APPLICATION_JSON_VALUE).
             auth().
@@ -121,16 +121,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             post(BASE_PATH).
             then().
             log().all().
-            statusCode(HttpStatus.CREATED.value());
+            statusCode(HttpStatus.CREATED.value())
+            .extract().as(Long.class);
     }
 
-    private void removeFavorite(TokenResponse loginToken, Long sourceStationId, Long targetStationId) {
+    private void removeFavorite(TokenResponse loginToken, Long favoriteId) {
         given().
             accept(MediaType.APPLICATION_JSON_VALUE).
             auth().
             oauth2(loginToken.getAccessToken()).
             when().
-            delete(BASE_PATH + "/source/{sourceId}/target/{targetId}", sourceStationId, targetStationId).
+            delete(BASE_PATH + "/{id}", favoriteId).
             then().
             log().all().
             statusCode(HttpStatus.NO_CONTENT.value());

@@ -9,9 +9,9 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 public class MemberDocumentation {
-	public static RestDocumentationResultHandler createMember() {
-		return document("members/create",
-			requestFields(
+    public static RestDocumentationResultHandler createMember() {
+        return document("members/create",
+            requestFields(
                 fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
                 fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name"),
                 fieldWithPath("password").type(JsonFieldType.STRING).description("The user's password")
@@ -37,25 +37,25 @@ public class MemberDocumentation {
 
     public static RestDocumentationResultHandler getMember() {
         return document("members/view",
-			pathParameters(
-				parameterWithName("id").description("The user's id")
-			),
-			responseFields(
-				fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
-				fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
-				fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
-			)
-		);
-	}
+            pathParameters(
+                parameterWithName("id").description("The user's id")
+            ),
+            responseFields(
+                fieldWithPath("id").type(JsonFieldType.NUMBER).description("The user's id"),
+                fieldWithPath("email").type(JsonFieldType.STRING).description("The user's email address"),
+                fieldWithPath("name").type(JsonFieldType.STRING).description("The user's name")
+            )
+        );
+    }
 
-	public static RestDocumentationResultHandler getMemberException() {
-		return document("members/viewException",
-			pathParameters(
-				parameterWithName("id").description("The user's id")
-			),
-			responseFields(
-				fieldWithPath("errorMessage").type(JsonFieldType.STRING).description("It's Error Message")
-			)
-		);
-	}
+    public static RestDocumentationResultHandler getMemberException() {
+        return document("members/viewException",
+            pathParameters(
+                parameterWithName("id").description("The user's id")
+            ),
+            responseFields(
+                fieldWithPath("errorMessage").type(JsonFieldType.STRING).description("It's Error Message")
+            )
+        );
+    }
 }

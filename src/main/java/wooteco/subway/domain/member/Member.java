@@ -1,43 +1,45 @@
 package wooteco.subway.domain.member;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Embedded;
 
-import wooteco.subway.domain.favorite.Favorite;
-import wooteco.subway.domain.favorite.Favorites;
+import wooteco.subway.domain.util.BaseEntity;
 
-public class Member {
+@Entity
+public class Member extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEMBER_ID")
     private Long id;
-    private String email;
-    private String name;
-    private String password;
-    @Embedded(onEmpty = Embedded.OnEmpty.USE_EMPTY)
-    private Favorites favorites;
 
-    private Member() {
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String password;
+
+    protected Member() {
     }
 
     public Member(String email, String name, String password) {
-        this(null, email, name, password, new Favorites(new LinkedHashSet<>()));
+        this(null, email, name, password);
     }
 
     public Member(Long id, String email, String name, String password) {
-        this(id, email, name, password, new Favorites(new LinkedHashSet<>()));
-    }
-
-    public Member(Long id, String email, String name, String password, Favorites favorites) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
-        this.favorites = favorites;
     }
 
     public void update(String name, String password) {
@@ -51,22 +53,6 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
-    }
-
-    public Set<Long> findAllFavoriteStationIds() {
-        return Collections.unmodifiableSet(favorites.findAllIds());
-    }
-
-    public boolean hasFavorite(Favorite favorite) {
-        return favorites.hasFavorite(favorite);
-    }
-
-    public void addFavorite(Favorite favorite) {
-        favorites.addFavorite(favorite);
-    }
-
-    public void removeFavorite(Favorite favorite) {
-        favorites.removeFavorite(favorite);
     }
 
     public Long getId() {
@@ -83,10 +69,6 @@ public class Member {
 
     public String getPassword() {
         return password;
-    }
-
-    public Set<Favorite> getFavorites() {
-        return favorites.getFavorites();
     }
 
     @Override

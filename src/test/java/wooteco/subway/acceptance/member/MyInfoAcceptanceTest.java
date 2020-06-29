@@ -20,8 +20,8 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보 관리 기능")
     @Test
     void manageMe() {
-        String location = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
-        assertThat(location).isNotBlank();
+        Long memberId = createMember(TEST_USER_EMAIL, TEST_USER_NAME, TEST_USER_PASSWORD);
+        assertThat(memberId).isNotNull();
 
         TokenResponse loginToken = login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
 

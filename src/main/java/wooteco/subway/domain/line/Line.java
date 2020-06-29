@@ -1,33 +1,41 @@
 package wooteco.subway.domain.line;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.relational.core.mapping.Embedded;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Line {
+import wooteco.subway.domain.station.Station;
+import wooteco.subway.domain.util.BaseEntity;
+
+@Entity
+public class Line extends BaseEntity {
+    @Embedded
+    private final LineStations stations = new LineStations();
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "LINE_ID")
     private Long id;
+    @Column(nullable = false, unique = true)
     private String name;
+    @Column(nullable = false)
     private LocalTime startTime;
+    @Column(nullable = false)
     private LocalTime endTime;
+    @Column(nullable = false)
     private int intervalTime;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-    @Embedded.Empty
-    private LineStations stations = LineStations.empty();
 
     public Line() {
     }
 
     public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -36,14 +44,6 @@ public class Line {
 
     public Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
         this(null, name, startTime, endTime, intervalTime);
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public void update(Line line) {
@@ -63,13 +63,14 @@ public class Line {
 
     public void addLineStation(LineStation lineStation) {
         stations.add(lineStation);
+        lineStation.changeLine(this);
     }
 
     public void removeLineStationById(Long stationId) {
         stations.removeById(stationId);
     }
 
-    public List<Long> getStationIds() {
+    public List<Station> getStationIds() {
         return stations.getStationIds();
     }
 
@@ -93,7 +94,22 @@ public class Line {
         return intervalTime;
     }
 
-    public Set<LineStation> getStations() {
+    public List<LineStation> getStations() {
         return stations.getStations();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Line line = (Line)o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

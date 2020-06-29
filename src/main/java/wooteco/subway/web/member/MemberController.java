@@ -24,11 +24,11 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Long> createMember(@RequestBody MemberRequest request) {
         MemberResponse memberResponse = memberService.createMember(request);
         return ResponseEntity
             .created(URI.create("/members/" + memberResponse.getId()))
-            .build();
+            .body(memberResponse.getId());
     }
 
     @GetMapping("/{id}")

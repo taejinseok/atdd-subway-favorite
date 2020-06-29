@@ -35,11 +35,10 @@ import wooteco.subway.web.member.interceptor.BearerAuthInterceptor;
     excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
         classes = {WebMvcConfig.class, BearerAuthInterceptor.class, LoginMemberMethodArgumentResolver.class}))
 public class LineControllerTest {
-    @MockBean
-    private LineService lineService;
-
     @Autowired
     protected MockMvc mockMvc;
+    @MockBean
+    private LineService lineService;
 
     @DisplayName("eTag를 활용한 HTTP 캐시 설정 검증")
     @Test

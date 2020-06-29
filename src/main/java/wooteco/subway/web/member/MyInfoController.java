@@ -1,5 +1,6 @@
 package wooteco.subway.web.member;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -54,7 +55,7 @@ public class MyInfoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/favorites/existsPath")
+    @GetMapping("/favorites/exist")
     public ResponseEntity<FavoriteExistenceResponse> isExistFavoritePath(@LoginMember Member member,
         @RequestParam Long sourceId, @RequestParam Long targetId) {
         FavoriteExistenceResponse response = favoriteService.hasFavoritePath(member, sourceId, targetId);
@@ -62,16 +63,16 @@ public class MyInfoController {
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity<Void> addFavorite(@LoginMember Member member,
+    public ResponseEntity<Long> addFavorite(@LoginMember Member member,
         @Valid @RequestBody FavoriteRequest favoriteRequest) {
-        favoriteService.addFavorite(member, favoriteRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Long savedId = favoriteService.addFavorite(member, favoriteRequest);
+        return ResponseEntity.created(URI.create("/favorites/" + savedId))
+            .body(savedId);
     }
 
-    @DeleteMapping("/favorites/source/{sourceId}/target/{targetId}")
-    public ResponseEntity<Void> removeFavorite(@LoginMember Member member,
-        @PathVariable Long sourceId, @PathVariable Long targetId) {
-        favoriteService.removeFavorite(member, sourceId, targetId);
+    @DeleteMapping("/favorites/{id}")
+    public ResponseEntity<Void> removeFavorite(@LoginMember Member member, @PathVariable Long id) {
+        favoriteService.removeFavorite(member, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

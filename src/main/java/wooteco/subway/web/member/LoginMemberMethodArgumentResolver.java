@@ -30,7 +30,7 @@ public class LoginMemberMethodArgumentResolver implements HandlerMethodArgumentR
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String email = (String)webRequest.getAttribute(LOGIN_MEMBER_ATTRIBUTE_NAME, SCOPE_REQUEST);
         if (StringUtils.isBlank(email)) {
             throw new InvalidAuthenticationException("로그인이 되어있지 않거나 세션이 만료되었습니다.");

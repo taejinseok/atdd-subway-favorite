@@ -1,11 +1,7 @@
 import { edgeItemTemplate } from "../../utils/templates.js";
 import api from "../../api/index.js";
 import showSnackbar from "../../lib/snackbar/index.js";
-import {
-  EVENT_TYPE,
-  SUCCESS_MESSAGE,
-  ERROR_MESSAGE
-} from "../../utils/constants.js";
+import { ERROR_MESSAGE, EVENT_TYPE, SUCCESS_MESSAGE } from "../../utils/constants.js";
 
 function Favorite() {
   const $favoriteList = document.querySelector("#favorite-list");

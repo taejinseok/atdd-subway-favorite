@@ -11,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
@@ -25,8 +25,8 @@ import wooteco.subway.service.path.dto.PathResponse;
 import wooteco.subway.service.station.dto.StationResponse;
 
 @Sql("/truncate.sql")
-@TestPropertySource("classpath:application-test.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 public class AcceptanceTest {
 	public static final String STATION_NAME_KANGNAM = "강남역";
 	public static final String STATION_NAME_YEOKSAM = "역삼역";
@@ -252,7 +252,7 @@ public class AcceptanceTest {
 		addLineStation(lineResponse4.getId(), stationResponse1.getId(), stationResponse7.getId(), 40, 3);
 	}
 
-	public String createMember(String email, String name, String password) {
+	public Long createMember(String email, String name, String password) {
 		Map<String, String> params = new HashMap<>();
 		params.put("email", email);
 		params.put("name", name);
@@ -268,7 +268,7 @@ public class AcceptanceTest {
 				then().
 				log().all().
 				statusCode(HttpStatus.CREATED.value()).
-				extract().header("Location");
+				extract().as(Long.class);
 	}
 
 	public MemberResponse getMember(Long memberId) {

@@ -1,27 +1,39 @@
 package wooteco.subway.domain.station;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
+import java.util.Objects;
 
-import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Station {
+import wooteco.subway.domain.util.BaseEntity;
+
+@Entity
+public class Station extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "STATION_ID")
     private Long id;
+
+    @Column(name = "NAME", unique = true, nullable = false)
     private String name;
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     public Station() {
     }
 
     public Station(String name) {
-        this.name = name;
+        this(null, name);
     }
 
     public Station(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public boolean hasId(Long stationId) {
+        return Objects.equals(this.id, stationId);
     }
 
     public Long getId() {
@@ -32,7 +44,18 @@ public class Station {
         return name;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Station station = (Station)o;
+        return Objects.equals(id, station.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -189,7 +189,7 @@ public class MyInfoControllerTest {
         String expected = "{\"existence\" : " + true + "}";
 
         this.mockMvc.perform(
-            get(BASE_PATH_WITH_FAVORITE + "/existsPath")
+            get(BASE_PATH_WITH_FAVORITE + "/exist")
                 .queryParam("sourceId", String.valueOf(SOURCE_STATION_ID))
                 .queryParam("targetId", String.valueOf(TARGET_STATION_ID))
                 .accept(MediaType.APPLICATION_JSON)
@@ -222,8 +222,8 @@ public class MyInfoControllerTest {
     @Test
     void removeFavorite() throws Exception {
         this.mockMvc.perform(
-            RestDocumentationRequestBuilders.delete(BASE_PATH_WITH_FAVORITE + "/source/{sourceId}/target/{targetId}",
-                SOURCE_STATION_ID, TARGET_STATION_ID)
+            RestDocumentationRequestBuilders.delete(BASE_PATH_WITH_FAVORITE + "/{id}",
+                1L)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, token))
             .andExpect(status().isNoContent())

@@ -1,22 +1,21 @@
 package wooteco.subway.domain.station;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Stations {
-    private List<Station> stations;
+    private final List<Station> stations;
 
     public Stations(List<Station> stations) {
-        this.stations = stations;
+        this.stations = Collections.unmodifiableList(new ArrayList<>(Objects.requireNonNull(stations)));
     }
 
-    public List<Station> getStations() {
-        return stations;
-    }
-
-    public Station extractStationById(Long stationId) {
+    public Optional<Station> extractStationById(Long stationId) {
         return stations.stream()
-                .filter(it -> it.getId() == stationId)
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            .filter(it -> Objects.equals(it.getId(), stationId))
+            .findFirst();
     }
 }
